@@ -2,6 +2,8 @@ import cv2
 import torch
 import time
 import numpy as np
+from keras.models import Sequential
+from keras.layers import AveragePooling2D, GlobalMaxPooling2D
 
 device = torch.device(
     "cuda") if torch.cuda.is_available() else torch.device("cpu")
@@ -61,15 +63,16 @@ def find_depth(img, midas, transforms, coordinates):
     img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
     x_start, x_end = max(0, x_start), min(img.shape[1]-1, x_end)
     y_start, y_end = max(0, y_start), min(img.shape[0]-1, y_end)
-    # image_crop = depth_map[y_start:y_end, x_start:x_end]
+    image_crop = depth_map[y_start:y_end, x_start:x_end]
+
+    if x_end-x_start > 0 and y_end-y_start > 0:
+        getMaxHeat(image_crop)
 
     # if x and y:
     #     print(x, y)
     #     print(depth_map[y, x, :])
 
     return {'bbCor': [x_start, y_start, x_end, y_end], 'fingerTipCor': [x, y], 'originaImg': img, 'depthMap': depth_map}
-
-    # getMaxHeat(image_crop)
 
     # # Displaying Video
     # cv2.putText(img, f'FPS: {int(fps)}', (20, 70),
@@ -85,9 +88,20 @@ def find_depth(img, midas, transforms, coordinates):
 
 
 def getMaxHeat(img):
-    # extract red channel
-    red_channel = img[:, :, 2]
-    if len(red_channel) > 0:
-        i, j = np.unravel_index(red_channel.argmax(), red_channel.shape)
-        print(i, j)
-        print(red_channel[i][j])
+    # Pooling
+    # define model containing just a single average pooling layer
+    model = Sequential(
+        [
+            AveragePooling2D(pool_size=3, strides=3),
+            GlobalMaxPooling2D()
+        ])
+
+    # generate pooled output
+    output = model.predict(img)
+    print(output)
+    # # extract red channel
+    # red_channel = img[:, :, 2]
+    # if len(red_channel) > 0:
+    #     i, j = np.unravel_index(red_channel.argmax(), red_channel.shape)
+    #     print(i, j)
+    #     print(red_channel[i][j])

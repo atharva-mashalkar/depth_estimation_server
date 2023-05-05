@@ -44,3 +44,6 @@ class Tone:
         one_sec = 1000  # Milliseconds
         sound.play(loops=1, maxtime=int(duration * one_sec))
         time.sleep(duration)
+
+
+Tone.sine(440, 0.5, duration=5)
