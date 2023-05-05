@@ -2,7 +2,7 @@ import asyncio
 import logging
 import websockets
 from websockets import WebSocketServerProtocol
-from main import cap_height, cap_width
+from main import cap_height, cap_width, runModels
 import json
 
 logging.basicConfig(level=logging.INFO)
@@ -36,7 +36,8 @@ class Server:
 
     async def distribute(self, ws: WebSocketServerProtocol) -> None:
         async for message in ws:
-            await self.send_to_clients(message)
+            res = runModels(json.loads(message)['msg'])
+            await self.send_to_clients(json.dumps(res))
 
     async def ws_handler(self, ws: WebSocketServerProtocol, uri: str) -> None:
         await self.register(ws)
@@ -47,7 +48,8 @@ class Server:
 
 
 server = Server()
-start_server = websockets.serve(server.ws_handler, 'localhost', 8000)
+start_server = websockets.serve(
+    server.ws_handler, 'localhost', 8000, ping_interval=None)
 loop = asyncio.get_event_loop()
 try:
     loop.run_until_complete(start_server)

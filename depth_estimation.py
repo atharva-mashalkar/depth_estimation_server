@@ -34,8 +34,6 @@ def dep_est_model_transformation(model_type):
 
 
 def find_depth(img, midas, transforms, coordinates):
-    # Starting the timer
-    start = time.time()
 
     # Getting coordinates of the required part of the image
     [x_start, y_start, x_end, y_end, x, y] = coordinates
@@ -63,25 +61,27 @@ def find_depth(img, midas, transforms, coordinates):
     img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
     x_start, x_end = max(0, x_start), min(img.shape[1]-1, x_end)
     y_start, y_end = max(0, y_start), min(img.shape[0]-1, y_end)
-    image_crop = depth_map[y_start:y_end, x_start:x_end]
-    if x and y:
-        print(x, y)
-        print(depth_map[y, x, :])
-        # print(depth_map[:, :, 2][y, x], img[:, :, 1][y, x], img[:, :, 0][y, x])
+    # image_crop = depth_map[y_start:y_end, x_start:x_end]
+
+    # if x and y:
+    #     print(x, y)
+    #     print(depth_map[y, x, :])
+
+    return {'bbCor': [x_start, y_start, x_end, y_end], 'fingerTipCor': [x, y], 'originaImg': img, 'depthMap': depth_map}
 
     # getMaxHeat(image_crop)
-    # Calculating FPS
-    end = time.time()
-    totalTime = end - start
-    fps = 1 / totalTime
 
-    # Displaying Video
-    cv2.putText(img, f'FPS: {int(fps)}', (20, 70),
-                cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 2)
-    cv2.imshow('Image', img)
-    if x_end-x_start > 0 and y_end-y_start > 0:
-        cv2.imshow('Croped_image', image_crop)
-    cv2.imshow('Depth Map', depth_map)
+    # # Displaying Video
+    # cv2.putText(img, f'FPS: {int(fps)}', (20, 70),
+    #             cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 2)
+    # # cv2.imshow('Image', img)
+    # # cv2_img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+    # cv2.imwrite("image.jpg", img)
+    # if x_end-x_start > 0 and y_end-y_start > 0:
+    #     #     cv2.imshow('Croped_image', image_crop)
+    #     cv2.imwrite("Croped_image.jpg", image_crop)
+    # cv2.imwrite("Depth_map.jpg", depth_map)
+    # cv2.imshow('Depth Map', depth_map)
 
 
 def getMaxHeat(img):
