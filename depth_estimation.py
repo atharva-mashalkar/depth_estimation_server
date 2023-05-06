@@ -105,7 +105,7 @@ def getMaxHeat(img):
     # model = Sequential([AveragePooling2D(pool_size=3, strides=3), GlobalMaxPooling2D()])
 
     # generate pooled output
-    output = model.predict(img).cpu().numpy()
+    output = model(img).cpu().numpy()
     print(output)
     # print(output.shape)
     # # extract red channel
