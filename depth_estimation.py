@@ -98,12 +98,7 @@ def getMaxHeat(img):
     img = img.reshape(1, img.shape[0], img.shape[1], 3)
     img = keras.backend.cast(img, "float32")
     # print(img.shape)
-    model = Sequential(
-        [
-            AveragePooling2D(pool_size=3, strides=3),
-            # GlobalMaxPooling2D()
-        ]
-    )
+    model = Sequential([AveragePooling2D(pool_size=3, strides=3), GlobalMaxPooling2D()])
 
     # generate pooled output
     output = model.predict(img)
