@@ -5,8 +5,7 @@ import numpy as np
 from keras.models import Sequential
 from keras.layers import AveragePooling2D, GlobalMaxPooling2D
 
-device = torch.device(
-    "cuda") if torch.cuda.is_available() else torch.device("cpu")
+device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 
 
 def dep_est_load_model(model_type):
@@ -36,7 +35,6 @@ def dep_est_model_transformation(model_type):
 
 
 def find_depth(img, midas, transforms, coordinates):
-
     # Getting coordinates of the required part of the image
     [x_start, y_start, x_end, y_end, x, y] = coordinates
 
@@ -54,25 +52,31 @@ def find_depth(img, midas, transforms, coordinates):
             align_corners=False,
         ).squeeze()
     depth_map = prediction.cpu().numpy()
-    depth_map = cv2.normalize(depth_map, None, 0, 1,
-                              norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64F)
-    depth_map = (depth_map*255).astype(np.uint8)
+    depth_map = cv2.normalize(
+        depth_map, None, 0, 1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64F
+    )
+    depth_map = (depth_map * 255).astype(np.uint8)
     depth_map = cv2.applyColorMap(depth_map, cv2.COLORMAP_MAGMA)
 
     # Finding finter tip coordinates
     img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-    x_start, x_end = max(0, x_start), min(img.shape[1]-1, x_end)
-    y_start, y_end = max(0, y_start), min(img.shape[0]-1, y_end)
+    x_start, x_end = max(0, x_start), min(img.shape[1] - 1, x_end)
+    y_start, y_end = max(0, y_start), min(img.shape[0] - 1, y_end)
     image_crop = depth_map[y_start:y_end, x_start:x_end]
 
-    if x_end-x_start > 0 and y_end-y_start > 0:
+    if x_end - x_start > 0 and y_end - y_start > 0:
         getMaxHeat(image_crop)
 
     # if x and y:
     #     print(x, y)
     #     print(depth_map[y, x, :])
 
-    return {'bbCor': [x_start, y_start, x_end, y_end], 'fingerTipCor': [x, y], 'originaImg': img, 'depthMap': depth_map}
+    return {
+        "bbCor": [x_start, y_start, x_end, y_end],
+        "fingerTipCor": [x, y],
+        "originaImg": img,
+        "depthMap": depth_map,
+    }
 
     # # Displaying Video
     # cv2.putText(img, f'FPS: {int(fps)}', (20, 70),
@@ -90,16 +94,18 @@ def find_depth(img, midas, transforms, coordinates):
 def getMaxHeat(img):
     # Pooling
     # define model containing just a single average pooling layer
-    print(img.shape)
-    # model = Sequential(
-    #     [
-    #         AveragePooling2D(pool_size=3, strides=3),
-    #         # GlobalMaxPooling2D()
-    #     ])
+    img = img.reshape(1, img.shape[0], img.shape[1], 3)
+    # print(img.shape)
+    model = Sequential(
+        [
+            AveragePooling2D(pool_size=3, strides=3),
+            # GlobalMaxPooling2D()
+        ]
+    )
 
-    # # generate pooled output
-    # output = model.predict(img)
-    # print(output)
+    # generate pooled output
+    output = model.predict(img)
+    print(output)
     # print(output.shape)
     # # extract red channel
     # red_channel = img[:, :, 2]
