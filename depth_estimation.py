@@ -98,7 +98,7 @@ def getMaxHeat(img):
     # Pooling
     # define model containing just a single average pooling layer
     # img = img.reshape(1, img.shape[0], img.shape[1], 3)
-    input = torch.from_numpy(img).to(device)
+    input = torch.from_numpy(img)
     model = nn.Sequential(nn.AvgPool2d(3, stride=3))
     model.to(device)
     # img = keras.backend.cast(img, "float32")
