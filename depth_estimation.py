@@ -2,6 +2,7 @@ import cv2
 import torch
 import time
 import numpy as np
+import keras
 from keras.models import Sequential
 from keras.layers import AveragePooling2D, GlobalMaxPooling2D
 
@@ -95,6 +96,7 @@ def getMaxHeat(img):
     # Pooling
     # define model containing just a single average pooling layer
     img = img.reshape(1, img.shape[0], img.shape[1], 3)
+    img = keras.backend.cast(img, "float32")
     # print(img.shape)
     model = Sequential(
         [
