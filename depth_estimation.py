@@ -98,7 +98,7 @@ def getMaxHeat(img):
     # Pooling
     # define model containing just a single average pooling layer
     # img = img.reshape(1, img.shape[0], img.shape[1], 3)
-    input = torch.from_numpy(img)
+    input = torch.from_numpy(img).to(device)
     model = nn.Sequential(nn.AvgPool2d(3, stride=3))
     model.to(device)
     # img = keras.backend.cast(img, "float32")
@@ -106,7 +106,7 @@ def getMaxHeat(img):
     # model = Sequential([AveragePooling2D(pool_size=3, strides=3), GlobalMaxPooling2D()])
 
     # generate pooled output
-    output = model(input).cpu().numpy()
+    output = model(input)
     print(output)
     # print(output.shape)
     # # extract red channel
