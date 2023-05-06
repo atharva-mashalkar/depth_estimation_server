@@ -2,9 +2,11 @@ import cv2
 import torch
 import time
 import numpy as np
-import keras
-from keras.models import Sequential
-from keras.layers import AveragePooling2D, GlobalMaxPooling2D
+from torch import nn
+
+# import keras
+# from keras.models import Sequential
+# from keras.layers import AveragePooling2D, GlobalMaxPooling2D
 
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 
@@ -96,12 +98,14 @@ def getMaxHeat(img):
     # Pooling
     # define model containing just a single average pooling layer
     img = img.reshape(1, img.shape[0], img.shape[1], 3)
-    img = keras.backend.cast(img, "float32")
+    model = nn.Sequential(nn.AvgPool2d(3, stride=3))
+    model.to(device)
+    # img = keras.backend.cast(img, "float32")
     # print(img.shape)
-    model = Sequential([AveragePooling2D(pool_size=3, strides=3), GlobalMaxPooling2D()])
+    # model = Sequential([AveragePooling2D(pool_size=3, strides=3), GlobalMaxPooling2D()])
 
     # generate pooled output
-    output = model.predict(img)
+    output = model.predict(img).cpu().numpy()
     print(output)
     # print(output.shape)
     # # extract red channel
