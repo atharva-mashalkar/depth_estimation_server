@@ -3,6 +3,7 @@ import torch
 import time
 import numpy as np
 from torch import nn
+import torchvision.transforms as T
 
 # import keras
 # from keras.models import Sequential
@@ -59,15 +60,16 @@ def find_depth(img, midas, transforms, coordinates):
         depth_map, None, 0, 1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64F
     )
     depth_map = (depth_map * 255).astype(np.uint8)
-    depth_map = cv2.applyColorMap(depth_map, cv2.COLORMAP_MAGMA)
+    # depth_map = cv2.applyColorMap(depth_map, cv2.COLORMAP_MAGMA)
 
-    # Finding finter tip coordinates
+    # Finding finger tip coordinates
     img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
     x_start, x_end = max(0, x_start), min(img.shape[1] - 1, x_end)
     y_start, y_end = max(0, y_start), min(img.shape[0] - 1, y_end)
     image_crop = depth_map[y_start:y_end, x_start:x_end]
-
-    if x_end - x_start > 0 and y_end - y_start > 0:
+    # print(depth_map.shape)
+    
+    if x_end - x_start > 3 and y_end - y_start > 3:
         getMaxHeat(image_crop)
 
     # if x and y:
@@ -95,18 +97,16 @@ def find_depth(img, midas, transforms, coordinates):
 
 
 def getMaxHeat(img):
-    # Pooling
-    # define model containing just a single average pooling layer
-    # img = img.reshape(1, img.shape[0], img.shape[1], 3)
-    input = torch.from_numpy(img).to(device)
-    model = nn.Sequential(nn.AvgPool2d(3, stride=3))
+    input = T.ToTensor()(img).to(device)
+    input = input.unsqueeze(0)
+    model = nn.Sequential(
+         nn.AvgPool2d(3, stride=3),
+         nn.AdaptiveMaxPool2d((1,1))
+        )
     model.to(device)
-    # img = keras.backend.cast(img, "float32")
-    # print(img.shape)
-    # model = Sequential([AveragePooling2D(pool_size=3, strides=3), GlobalMaxPooling2D()])
-
-    # generate pooled output
     output = model(input)
+    output = output.squeeze(0).cpu().numpy()
+    output = (output * 255).astype(np.uint8)
     print(output)
     # print(output.shape)
     # # extract red channel
