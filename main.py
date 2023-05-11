@@ -45,10 +45,14 @@ def runModels(msg):
 
         # Getting Predictions
         final_img, coordinates = find_index_fing_tip(img, hands)
-        output = find_depth(final_img, dep_est_model,
-                            dep_est_transforms, coordinates)
-        bbCor, fingerTipCor, originaImg, depthMap = output['bbCor'], output[
-            'fingerTipCor'], output['originaImg'], output['depthMap']
+        output = find_depth(final_img, dep_est_model, dep_est_transforms, coordinates)
+        # print(output)
+        # return {
+        #     'output': output
+        # }
+
+        bbCor, fingerTipCor, originaImg, depthMap,  maxHeat = output['bbCor'], output[
+            'fingerTipCor'], output['originaImg'], output['depthMap'],  output['maxHeat']
 
         image_crop = depthMap[bbCor[1]:bbCor[3], bbCor[0]:bbCor[2]]
 
@@ -78,4 +82,4 @@ def runModels(msg):
             image_crop = ""
 
         # print(image_crop)
-        return {'originaImg': originaImg, 'depthMap': depthMap, 'croppedImg': image_crop}
+        return {'originaImg': originaImg, 'depthMap': depthMap, 'croppedImg': image_crop, 'maxHeat':maxHeat}

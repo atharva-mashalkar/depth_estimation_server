@@ -5,12 +5,7 @@ import numpy as np
 from torch import nn
 import torchvision.transforms as T
 
-# import keras
-# from keras.models import Sequential
-# from keras.layers import AveragePooling2D, GlobalMaxPooling2D
-
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-
 
 def dep_est_load_model(model_type):
     """
@@ -69,8 +64,9 @@ def find_depth(img, midas, transforms, coordinates):
     image_crop = depth_map[y_start:y_end, x_start:x_end]
     # print(depth_map.shape)
     
+    maxHeat = 1
     if x_end - x_start > 3 and y_end - y_start > 3:
-        getMaxHeat(image_crop)
+        maxHeat = getMaxHeat(image_crop)
 
     # if x and y:
     #     print(x, y)
@@ -81,6 +77,7 @@ def find_depth(img, midas, transforms, coordinates):
         "fingerTipCor": [x, y],
         "originaImg": img,
         "depthMap": depth_map,
+        "maxHeat":maxHeat
     }
 
     # # Displaying Video
@@ -107,7 +104,7 @@ def getMaxHeat(img):
     output = model(input)
     output = output.squeeze(0).cpu().numpy()
     output = (output * 255).astype(np.uint8)
-    print(output)
+    return str(output[0][0][0])
     # print(output.shape)
     # # extract red channel
     # red_channel = img[:, :, 2]
