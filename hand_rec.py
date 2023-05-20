@@ -21,7 +21,7 @@ def load_hand_rec_model(use_static_image_mode, min_detection_confidence, min_tra
 
 
 def find_index_fing_tip(image, hands):
-    image = cv2.flip(image, 1)  # Mirror display
+    # image = cv2.flip(image, 1)  # Mirror display
     debug_image = copy.deepcopy(image)
     # Detection implementation #############################################################
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
