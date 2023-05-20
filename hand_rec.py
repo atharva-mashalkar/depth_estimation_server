@@ -43,7 +43,7 @@ def find_index_fing_tip(image, hands):
             x, y = landmark_list[8][0], landmark_list[8][1]
             y_start = y - h//2
             y_end = y + h//2
-            if handedness.classification[0].label[0:] == "Left":
+            if handedness.classification[0].label[0:] == "Right":
                 x_start, x_end = x+15, x+15+w
             else:
                 x_start, x_end = x-w-10, x-15
