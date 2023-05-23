@@ -44,9 +44,9 @@ def find_index_fing_tip(image, hands):
             y_start = y - h//2
             y_end = y + h//2
             if handedness.classification[0].label[0:] == "Right":
-                x_start, x_end = x+25, x+25+w
+                x_start, x_end = x+7, x+7+w
             else:
-                x_start, x_end = x-w-25, x-25
+                x_start, x_end = x-w-7, x-7
             # debug_image = draw_bounding_rect(
             #     debug_image, [x_start, y_start, x_end, y_end])
     return debug_image, [x_start, y_start, x_end, y_end, x, y]
