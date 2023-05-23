@@ -20,7 +20,7 @@ min_detection_confidence = args.min_detection_confidence
 min_tracking_confidence = args.min_tracking_confidence
 
 # Load depth estimation model and necessary transformations to resize and normalize the image
-MODEL_TYPE = "MiDaS_small"  # "DPT_Hybrid" "DPT_Large"
+MODEL_TYPE = "DPT_Large"  # "DPT_Hybrid" "DPT_Large" "MiDaS_small"
 dep_est_model = dep_est_load_model(MODEL_TYPE)
 dep_est_transforms = dep_est_model_transformation(MODEL_TYPE)
 
