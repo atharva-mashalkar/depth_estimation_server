@@ -67,7 +67,7 @@ def runModels(msg):
 
         # Imprinting FPS
         cv2.putText(originaImg, f'FPS: {int(fps)}', (20, 70),
-                    cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 2)
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 255, 0), 2)
 
         # Encoding images and sending them to client
         originaImg = 'data:image/jpeg;base64,' + \
