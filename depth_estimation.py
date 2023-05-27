@@ -55,7 +55,7 @@ def find_depth(img, midas, transforms, coordinates):
         depth_map, None, 0, 1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64F
     )
     depth_map = (depth_map * 255).astype(np.uint8)
-    # depth_map = cv2.applyColorMap(depth_map, cv2.COLORMAP_MAGMA)
+    depth_map2 = cv2.applyColorMap(depth_map, cv2.COLORMAP_MAGMA)
 
     # Finding finger tip coordinates
     img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
@@ -76,7 +76,7 @@ def find_depth(img, midas, transforms, coordinates):
         "bbCor": [x_start, y_start, x_end, y_end],
         "fingerTipCor": [x, y],
         "originaImg": img,
-        "depthMap": depth_map,
+        "depthMap": depth_map2,
         "maxHeat":maxHeat
     }
 
