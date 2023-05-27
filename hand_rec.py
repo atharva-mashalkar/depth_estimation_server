@@ -32,7 +32,7 @@ def find_index_fing_tip(image, hands):
 
     #  ####################################################################
     x_start = y_start = x_end = y_end = 0
-    w = h = int(cap_width*0.3)
+    w = h = int(cap_width*0.45)
     x = y = 0
     if results.multi_hand_landmarks is not None:
         for hand_landmarks, handedness in zip(results.multi_hand_landmarks,
